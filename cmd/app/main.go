@@ -14,10 +14,11 @@ import (
 // 1. Make filtering final output file without duplicates.
 // 2. Add new source, not only profesia.sk.
 // 3. Implement html template instead of txt (to be able to follow links).
+var (
+	path = filepath.Join("data", "log.txt")
+)
 
 func main() {
-
-	path := filepath.Join("data", "log.txt")
 
 	file, err := os.Create(path)
 	if err != nil {
@@ -48,7 +49,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 	//if err != nil {
 	//	panic(err)
 	//}
-	data, err := os.ReadFile("./data/log.txt")
+
+	data, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal("couldn't read log file'")
 	}
