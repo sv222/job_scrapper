@@ -19,10 +19,10 @@ var (
 )
 
 func main() {
-
+	os.MkdirAll("data", 0755)
 	file, err := os.Create(path)
 	if err != nil {
-		log.Println("couldn't create log file'")
+		log.Println(err)
 	}
 
 	defer file.Close()
@@ -37,14 +37,14 @@ func main() {
 	http.HandleFunc("/", index)
 
 	// starting server
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":7070", nil))
 }
 
 // root handler
 func index(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatal("couldn't read log file'")
+		log.Fatal(err)
 	}
 
 	fmt.Fprint(w, string(data))

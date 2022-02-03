@@ -38,7 +38,7 @@ func Parse() {
 		file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0644)
 
 		if err != nil {
-			log.Fatal("couldn't open log.txt [parser]'")
+			log.Fatal(err)
 		}
 
 		defer file.Close()
