@@ -2,33 +2,38 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gocolly/colly"
 )
 
+type Job struct {
+	Title string
+	Link  string
+}
+
 func main() {
 	// Instantiate default collector
 	c := colly.NewCollector(
-		// Visit only domains: hackerspaces.org, wiki.hackerspaces.org
+		// Visit only domains
 		colly.AllowedDomains("www.profesia.sk", "profesia.sk"),
+		// Set mas depth level
+		colly.MaxDepth(0),
 	)
 
 	// On every a element which has href attribute call callback
-	c.OnHTML(".title", func(e *colly.HTMLElement) {
-		link := e.Attr("")
+	c.OnHTML(".list-row", func(e *colly.HTMLElement) {
+		//link := e.Attr("href")
+
+		dataTemp := Job{}
+
+		dataTemp.Title = e.ChildText(".title")
+		dataTemp.Link = e.ChildAttr("a", "href")
 
 		// Print link
-		fmt.Printf("Job found: %q -> %s\n", e.Text, link)
-		// Visit link found on page
-		// Only those links are visited which are in AllowedDomains
-		c.Visit(e.Request.AbsoluteURL(link))
+		fmt.Printf("[%s]: %q -> %s\n", time.Now().Format("2006-01-02 15:04:05"), dataTemp.Title, dataTemp.Link)
 	})
 
-	// Before making a request print "Visiting ..."
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL.String())
-	})
-
-	// Start scraping on https://hackerspaces.org
+	// Start scraping on profesia.sk
 	c.Visit("https://www.profesia.sk/praca/?search_anywhere=golang")
 }
