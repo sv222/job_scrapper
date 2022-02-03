@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"time"
-
-	"github.com/gocolly/colly"
+	"job_crawler/internal/app"
+	"log"
+	"net/http"
+	"os"
 )
 
 type Job struct {
@@ -13,27 +14,35 @@ type Job struct {
 }
 
 func main() {
-	// Instantiate default collector
-	c := colly.NewCollector(
-		// Visit only domains
-		colly.AllowedDomains("www.profesia.sk", "profesia.sk"),
-		// Set mas depth level
-		colly.MaxDepth(0),
-	)
 
-	// On every a element which has href attribute call callback
-	c.OnHTML(".list-row", func(e *colly.HTMLElement) {
-		//link := e.Attr("href")
+	//ticker := time.NewTicker(8 * time.Hour)
+	//
+	//// for every `tick` that our `ticker`
+	//// emits, we print `tock`
+	//for _ = range ticker.C {
+	//	app.Parse()
+	//}
 
-		dataTemp := Job{}
+	app.Parse()
 
-		dataTemp.Title = e.ChildText(".title")
-		dataTemp.Link = e.ChildAttr("a", "href")
+	http.HandleFunc("/", index)
 
-		// Print link
-		fmt.Printf("[%s]: %q -> %s\n", time.Now().Format("2006-01-02 15:04:05"), dataTemp.Title, dataTemp.Link)
-	})
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
 
-	// Start scraping on profesia.sk
-	c.Visit("https://www.profesia.sk/praca/?search_anywhere=golang")
+func index(w http.ResponseWriter, r *http.Request) {
+	//tmpl, err := template.ParseFiles("file.txt")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//err = tmpl.ExecuteTemplate(w, "file.txt", dataTemp)
+	//if err != nil {
+	//	panic(err)
+	//}
+	data, err := os.ReadFile("./data/log.txt")
+	if err != nil {
+		log.Fatal("couldn't read log file'")
+	}
+
+	fmt.Fprint(w, data)
 }
