@@ -31,6 +31,7 @@ func Parse() {
 
 		dataTemp := Job{}
 
+		// find selectors with data
 		dataTemp.Title = e.ChildText(".title")
 		dataTemp.Link = e.ChildAttr("a", "href")
 		path := filepath.Join("data", "log.txt")
@@ -42,8 +43,7 @@ func Parse() {
 
 		defer file.Close()
 
-		//tempMap := make(map[string]string)
-
+		// filter empty data
 		if strings.Contains(strings.ToLower(dataTemp.Title), "go") {
 			// Save data to file
 			now := time.Now()

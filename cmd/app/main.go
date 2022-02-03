@@ -40,16 +40,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+// root handler
 func index(w http.ResponseWriter, r *http.Request) {
-	//tmpl, err := template.ParseFiles("file.txt")
-	//if err != nil {
-	//	panic(err)
-	//}
-	//err = tmpl.ExecuteTemplate(w, "file.txt", dataTemp)
-	//if err != nil {
-	//	panic(err)
-	//}
-
 	data, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal("couldn't read log file'")
