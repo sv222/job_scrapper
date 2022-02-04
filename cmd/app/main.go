@@ -12,14 +12,18 @@ import (
 
 // TODO:
 // 1. Make filtering final output file without duplicates.
-// 2. Add new source, not only profesia.sk.
+// 2. Add new sources, not only profesia.sk.
 // 3. Implement html template instead of txt (to be able to follow links).
+
 var (
 	path = filepath.Join("data", "log.txt")
 )
 
 func main() {
+	// create folder for data scrapping
 	os.MkdirAll("data", 0755)
+
+	// create file for data
 	file, err := os.Create(path)
 	if err != nil {
 		log.Println(err)
@@ -47,6 +51,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	// pass scrapped data to ResponseWriter
 	fmt.Fprint(w, string(data))
 }
 
