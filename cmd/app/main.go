@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"job_crawler/internal/app"
 	"log"
 	"net/http"
@@ -15,11 +14,10 @@ import (
 // 2. Add new sources, not only profesia.sk.
 // 3. Implement html template instead of txt (to be able to follow links).
 
-var (
-	path = filepath.Join("data", "log.txt")
-)
-
 func main() {
+
+	path := filepath.Join("data", "log.txt")
+
 	// create folder for data scrapping
 	os.MkdirAll("data", 0755)
 
@@ -35,29 +33,14 @@ func main() {
 	app.Parse()
 
 	// iterate scrapping every N hours.
-	go parseAgain(8*time.Hour, app.Parse)
+	go app.ParseAgain(8*time.Hour, app.Parse)
 
 	// handle requests for index page
-	http.HandleFunc("/", index)
+	http.HandleFunc("/", app.IndexHandler)
+
+	// check health status of server
+	http.HandleFunc("/health-check", app.HealthCheckHandler)
 
 	// starting server
 	log.Fatal(http.ListenAndServe(":7070", nil))
-}
-
-// root handler
-func index(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// pass scrapped data to ResponseWriter
-	fmt.Fprint(w, string(data))
-}
-
-// parseAgain function makes iteration for a specific function
-func parseAgain(d time.Duration, f func()) {
-	for _ = range time.Tick(d) {
-		f()
-	}
 }

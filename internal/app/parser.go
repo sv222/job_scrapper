@@ -59,3 +59,10 @@ func Parse() {
 	// Start scraping on profesia.sk
 	c.Visit("https://www.profesia.sk/praca/?search_anywhere=golang")
 }
+
+// ParseAgain function makes iteration for a specific function
+func ParseAgain(d time.Duration, f func()) {
+	for _ = range time.Tick(d) {
+		f()
+	}
+}
